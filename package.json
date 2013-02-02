@@ -1,0 +1,41 @@
+{
+	"name": "gc2gh-issue-migrator",
+	"description": "Migration tool(s) for fetching issues from the Google Code Project Hosting Issue Tracker API and translating that data into a GitHub Issue Tracker offline-importable format.",
+	"version": "0.1.0",
+	"homepage": "https://github.com/JamesMGreene/gc2gh-issue-migrator",
+	"author": {
+		"name": "James M. Greene",
+		"email": "james.m.greene@gmail.com",
+		"url": "http://jamesgreene.net/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/JamesMGreene/gc2gh-issue-migrator.git"
+	},
+	"bugs": {
+		"url": "https://github.com/JamesMGreene/gc2gh-issue-migrator/issues"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/JamesMGreene/gc2gh-issue-migrator/blob/master/LICENSE-MIT"
+		}
+	],
+	"main": "lib/gc2gh-issue-migrator",
+	"engines": {
+		"node": ">= 0.8.0"
+	},
+	"scripts": {},
+	"dependencies": {
+		"gcph-client": "~1.6.0",
+		"q": "~0.8.11",
+		"tar": "0.1.x",
+		"fstream": "~0.1.21"
+	},
+	"devDependencies": {
+		"commander": "1.1.x",
+		"grunt": "~0.4.0a",
+		"grunt-contrib-jshint": "0.1.x"
+	},
+	"keywords": []
+}
