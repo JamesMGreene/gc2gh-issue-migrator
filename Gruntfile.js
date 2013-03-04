@@ -21,6 +21,8 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 
+	// Default task.
 	grunt.registerTask('default', ['jshint']);
-
+	// Travis-CI task
+	 grunt.registerTask('travis', ['jshint']);
 };
