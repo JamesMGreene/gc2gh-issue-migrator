@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JamesMGreene/gc2gh-issue-migrator.png)](https://travis-ci.org/JamesMGreene/gc2gh-issue-migrator)
+
 # gc2gh-issue-migrator
 
 Migration tool(s) for fetching issues from the Google Code Issue Tracker API and translating that data into a [GitHub Issue Tracker offline-importable format](https://gist.github.com/7f75ced1fa7576412901/006a7c69f57521e026be85937c9641e861e81802). Please note that you will need special permission/assistance from the _amazing_ [GitHub staff](mailto:support@github.com) to utilize this loading mechanism.
