@@ -16,7 +16,7 @@ var migrator = require('./util/gc2gh-issue-migrator-q');
 
 var projConfig = {
 	gc: {
-		project:  'phantomjs',
+		project: 'phantomjs',
 		username: 'james.m.greene@gmail.com',
 		password: null,  //'phantomjsFTW!'
 		closingStatus: 'Migrated'
@@ -45,5 +45,5 @@ cmd.password('Password: ').then(function(gcPassword) {
 }).then(function(gcClosedIssues) {
 	console.log('Completed successfully! All old issues on Google Code have been closed.');
 }).fail(function(err) {
-	console.error(err);
+	console.error(err.stack);
 }).done();
