@@ -45,90 +45,6 @@ var mkdir = function(dirPath) {
 	}
 };
 
-// Default the final output file if it was not provided as a commandline arg
-var outputDirPath = process.argv[2];
-if (!outputDirPath) {
-	var outputDir = path.resolve(process.cwd(), 'out/');
-	mkdir(outputDir);
-	outputDirPath = path.resolve(outputDir, 'phantomjs_github-import/');
-	mkdir(outputDirPath);
-	
-	mkdir(path.resolve(outputDirPath, 'issues/'));
-	mkdir(path.resolve(outputDirPath, 'milestones/'));
-	
-	console.warn('WARNING: Did not provide an output directory as an argument. Defaulting to:\n\t' + outputDirPath + '\n');
-}
-
-var projConfig = {
-	gc: {
-		project:  'phantomjs',
-		username: 'james.m.greene@gmail.com',
-		password: null  //'phantomjsFTW!'
-	},
-	gh: {
-		startingIssueId: 10001
-	}
-};
-
-var milestones = createMilestones();
-
-console.log('Let\'s extract all of our Google Code issues and convert them into the GitHub v3 issue format!\nFirst, we\'ll need some information....\n');
-console.log('GOOGLE CODE');
-console.log('Project: ' + projConfig.gc.project);
-console.log('Email: ' + projConfig.gc.username);
-
-cmd.password('Password: ').then(function(gcPassword) {
-	projConfig.gc.password = gcPassword;
-
-	console.log('GITHUB');
-	console.log('Starting Issue ID: ' + projConfig.gh.startingIssueId);
-	console.log('\nExtract and transform beginning!');
-
-// HACK HACK HACK - START - To stop hitting Google Code so hard....
-//(function() {
-//	projConfig.gc.password = 'fakePassword';
-//	var readAndTransform = function(config, milestones, done) {
-//		var inputFile = path.resolve(process.cwd(), 'in/phantomjs_localData.json');
-//		migrator._extractFromFile(inputFile, function(err, gcIssuesWithComments) {
-//			if (err) {
-//				done(err);
-//			}
-//			else {
-//				migrator._transform(config, milestones, gcIssuesWithComments, done);
-//			}
-//		});
-//	};
-//	extractAndTransform = Q.nfbind(readAndTransform);
-//})();
-	return extractAndTransform(projConfig, milestones);
-}).then(function(ghImportableOutput) {
-	// TODO: Implement and use `migrator.exportAsTar` instead
-	//return migrator.exportAsTar(ghRawIssues, ghRawComments, ghRawMilestones, outputDirPath);
-
-	var milestonesDir = path.resolve(outputDirPath, 'milestones/');
-	var issuesDir = path.resolve(outputDirPath, 'issues/');
-
-	return Q.all(
-		milestones.map(function(milestone) {
-		var rawMilestone = milestone.toRawMilestone();
-		return writeFile(path.resolve(milestonesDir, rawMilestone.number + '.json'), JSON.stringify(rawMilestone, null, '\t'));
-	})).then(function() {
-		return Q.all(ghImportableOutput.issues.map(function(rawIssueAndRawComments) {
-			return writeFile(path.resolve(issuesDir, rawIssueAndRawComments.issue.number + '.json'), JSON.stringify(rawIssueAndRawComments.issue, null, '\t'));
-		}));
-	}).then(function() {
-		return Q.all(ghImportableOutput.issues.map(function(rawIssueAndRawComments) {
-			return writeFile(path.resolve(issuesDir, rawIssueAndRawComments.issue.number + '.comments.json'), JSON.stringify(rawIssueAndRawComments.comments, null, '\t'));
-		}));
-	});
-}).then(function() {
-	console.log('Completed successfully!\nTAR/ZIP up your export directory and send it to GitHub!\n  ' + outputDirPath);
-}).fail(function(err) {
-	console.error(err + '\n' + err.stack);
-}).done();
-
-
-
 function createMilestones() {
 	return [
 		new Milestone({
@@ -232,3 +148,86 @@ function createMilestones() {
 		})
 	];
 }
+
+
+// Default the final output file if it was not provided as a commandline arg
+var outputDirPath = process.argv[2];
+if (!outputDirPath) {
+	var outputDir = path.resolve(process.cwd(), 'out/');
+	mkdir(outputDir);
+	outputDirPath = path.resolve(outputDir, 'phantomjs_github-import/');
+	mkdir(outputDirPath);
+	
+	mkdir(path.resolve(outputDirPath, 'issues/'));
+	mkdir(path.resolve(outputDirPath, 'milestones/'));
+	
+	console.warn('WARNING: Did not provide an output directory as an argument. Defaulting to:\n\t' + outputDirPath + '\n');
+}
+
+var projConfig = {
+	gc: {
+		project:  'phantomjs',
+		username: 'james.m.greene@gmail.com',
+		password: null  //'phantomjsFTW!'
+	},
+	gh: {
+		startingIssueId: 10001
+	}
+};
+
+var milestones = createMilestones();
+
+console.log('Let\'s extract all of our Google Code issues and convert them into the GitHub v3 issue format!\nFirst, we\'ll need some information....\n');
+console.log('GOOGLE CODE');
+console.log('Project: ' + projConfig.gc.project);
+console.log('Email: ' + projConfig.gc.username);
+
+cmd.password('Password: ').then(function(gcPassword) {
+	projConfig.gc.password = gcPassword;
+
+	console.log('GITHUB');
+	console.log('Starting Issue ID: ' + projConfig.gh.startingIssueId);
+	console.log('\nExtract and transform beginning!');
+
+// HACK HACK HACK - START - To stop hitting Google Code so hard....
+//(function() {
+//	projConfig.gc.password = 'fakePassword';
+//	var readAndTransform = function(config, milestones, done) {
+//		var inputFile = path.resolve(process.cwd(), 'in/phantomjs_localData.json');
+//		migrator._extractFromFile(inputFile, function(err, gcIssuesWithComments) {
+//			if (err) {
+//				done(err);
+//			}
+//			else {
+//				migrator._transform(config, milestones, gcIssuesWithComments, done);
+//			}
+//		});
+//	};
+//	extractAndTransform = Q.nfbind(readAndTransform);
+//})();
+	return extractAndTransform(projConfig, milestones);
+}).then(function(ghImportableOutput) {
+	// TODO: Implement and use `migrator.exportAsTar` instead
+	//return migrator.exportAsTar(ghRawIssues, ghRawComments, ghRawMilestones, outputDirPath);
+
+	var milestonesDir = path.resolve(outputDirPath, 'milestones/');
+	var issuesDir = path.resolve(outputDirPath, 'issues/');
+
+	return Q.all(
+		milestones.map(function(milestone) {
+		var rawMilestone = milestone.toRawMilestone();
+		return writeFile(path.resolve(milestonesDir, rawMilestone.number + '.json'), JSON.stringify(rawMilestone, null, '\t'));
+	})).then(function() {
+		return Q.all(ghImportableOutput.issues.map(function(rawIssueAndRawComments) {
+			return writeFile(path.resolve(issuesDir, rawIssueAndRawComments.issue.number + '.json'), JSON.stringify(rawIssueAndRawComments.issue, null, '\t'));
+		}));
+	}).then(function() {
+		return Q.all(ghImportableOutput.issues.map(function(rawIssueAndRawComments) {
+			return writeFile(path.resolve(issuesDir, rawIssueAndRawComments.issue.number + '.comments.json'), JSON.stringify(rawIssueAndRawComments.comments, null, '\t'));
+		}));
+	});
+}).then(function() {
+	console.log('Completed successfully!\nTAR/ZIP up your export directory and send it to GitHub!\n  ' + outputDirPath);
+}).fail(function(err) {
+	console.error(err + '\n' + err.stack);
+}).done();

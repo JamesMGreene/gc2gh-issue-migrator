@@ -37,12 +37,12 @@ cmd.password('Password: ').then(function(gcPassword) {
 	projConfig.gc.password = gcPassword;
 
 	console.log('GITHUB');
-	console.log('Repo: ' + projConfig.gh.repo)
+	console.log('Repo: ' + projConfig.gh.repo);
 	console.log('Starting Issue ID: ' + projConfig.gh.startingIssueId);
 
 	console.log('\n\nCloseout beginning!');
 	return migrator.closeOldIssues(projConfig);
-}).then(function(gcClosedIssues) {
+}).then(function(/* gcClosedIssues */) {
 	console.log('Completed successfully! All old issues on Google Code have been closed.');
 }).fail(function(err) {
 	console.error(err.stack);

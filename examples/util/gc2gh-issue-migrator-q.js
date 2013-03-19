@@ -9,7 +9,7 @@
 'use strict';
 
 // External modules
-var Qify = require('../../lib/util/q-ify');
+var qify = require('../../lib/util/q-ify');
 var migrator = require('../../lib/gc2gh-issue-migrator').create();
 
-module.exports = Qify(migrator);
+module.exports = qify(migrator);
